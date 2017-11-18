@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Util</string>
+
+    <string-array name="alerdialog_item">
+        <item>Google地图</item>
+        <item>高德地图</item>
+        <item>百度地图</item>
+    </string-array>
+    <string name="select_map">请选择地图导航</string>
+    <string name="no_google">未检测到Google地图</string>
+    <string name="no_gaode">未检测到高德地图</string>
+    <string name="no_baidu">未检测到百度地图</string>
+</resources>
