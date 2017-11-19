@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.jackyz.util">
+          package="com.jackyz.demo">
 
     <uses-permission android:name="android.permission.CAMERA"/>
     <!--android.permission.VIBRATE允许访问震动权限-->
@@ -43,10 +43,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
-        android:name=".base.BaseApplication"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:name=".MyApplication"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">

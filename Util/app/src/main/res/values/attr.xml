@@ -1,24 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <declare-styleable name="CircleImageView">
-        <attr name="civ_border_width" format="dimension"/>
-        <attr name="civ_border_color" format="color"/>
-        <attr name="civ_border_overlay" format="boolean"/>
-        <attr name="civ_fill_color" format="color"/>
-    </declare-styleable>
-
-    <declare-styleable name="RatingBar" tools:ignore="ResourceName">
-        <attr name="starImageSize" format="dimension"/>
-        <attr name="starImageWidth" format="dimension"/>
-        <attr name="starImageHeight" format="dimension"/>
-        <attr name="starImagePadding" format="dimension"/>
-        <attr name="starCount" format="integer"/>
-        <attr name="starNum" format="integer"/>
-        <attr name="starEmpty" format="reference"/>
-        <attr name="starFill" format="reference"/>
-        <attr name="starHalf" format="reference"/>
-        <attr name="clickable" format="boolean"/>
-        <attr name="halfstart" format="boolean"/>
-    </declare-styleable>
 
 </resources>

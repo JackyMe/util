@@ -1,4 +1,4 @@
-package com.jackyz.util;
+package com.jackyz.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
