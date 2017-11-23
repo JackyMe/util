@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 25
@@ -11,6 +13,11 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    lintOptions {//设置编译的lint开关，程序在buid的时候，会执行lint检查，有任何的错误或者警告提示，都会终止构建
+        abortOnError false
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -31,4 +38,14 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.zhy:okhttputils:2.6.2'
 
+}
+//http://blog.csdn.net/yang123465/article/details/54972351  上传Jcenter
+//上传Jcenter 参考 :http://blog.csdn.net/lmj623565791/article/details/51148825 ; 检验地址:https://jcenter.bintray.com/com/jackyz/util
+publish {
+    userOrg = 'zq699808'
+    groupId = 'com.jackyz.util'
+    artifactId = 'jackutil'
+    version = '1.0.0'
+    description = 'Super duper easy way to release your Android and other artifacts to bintray'
+    website = "https://github.com/JackyMe/${rootProject.name}"
 }
