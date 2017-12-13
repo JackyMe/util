@@ -22,7 +22,6 @@ import java.util.List;
  * desc    : 设备相关工具类
  */
 public final class DeviceUtils {
-
     private DeviceUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }

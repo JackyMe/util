@@ -28,7 +28,6 @@ public final class AppUtils {
     private AppUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
-
     /**
      * 判断App是否安装
      *

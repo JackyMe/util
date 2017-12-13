@@ -19,7 +19,6 @@ import java.util.List;
  * </pre>
  */
 public final class SDCardUtils {
-
     private SDCardUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }

@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * author  : Created by JackyZ
- * date    : on 2017/10/11.
+ * date    : on 2017/12/12
  * blog&git: http://blog.csdn.net/u011200604 & https://github.com/JackyMe/github.io
  * desc    : Activity相关工具类
  */
@@ -29,10 +29,10 @@ public final class ActivityUtils {
     }
 
     /**
-     * 判断Activity是否存在
+     * 判断 Activity 是否存在
      *
      * @param packageName 包名
-     * @param className   activity全路径类名
+     * @param className   activity 全路径类名
      * @return {@code true}: 是<br>{@code false}: 否
      */
     public static boolean isActivityExists(@NonNull final String packageName, @NonNull final String className) {
@@ -42,9 +42,9 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
-     * @param clz activity类
+     * @param clz Activity 类
      */
     public static void startActivity(@NonNull final Class<?> clz) {
         Context context = getActivityOrApp();
@@ -52,9 +52,9 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
-     * @param clz     activity类
+     * @param clz     Activity 类
      * @param options 跳转动画
      */
     public static void startActivity(@NonNull final Class<?> clz, @NonNull final Bundle options) {
@@ -63,9 +63,9 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
-     * @param clz       activity类
+     * @param clz       Activity 类
      * @param enterAnim 入场动画
      * @param exitAnim  出场动画
      */
@@ -78,20 +78,20 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity activity
-     * @param clz      activity类
+     * @param clz      Activity 类
      */
     public static void startActivity(@NonNull final Activity activity, @NonNull final Class<?> clz) {
         startActivity(activity, null, activity.getPackageName(), clz.getName(), null);
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity activity
-     * @param clz      activity类
+     * @param clz      Activity 类
      * @param options  跳转动画
      */
     public static void startActivity(@NonNull final Activity activity, @NonNull final Class<?> clz, @NonNull final Bundle options) {
@@ -99,10 +99,10 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity       activity
-     * @param clz            activity类
+     * @param clz            Activity 类
      * @param sharedElements 共享元素
      */
     public static void startActivity(@NonNull final Activity activity, @NonNull final Class<?> clz, @NonNull final View... sharedElements) {
@@ -110,10 +110,10 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity  activity
-     * @param clz       activity类
+     * @param clz       Activity 类
      * @param enterAnim 入场动画
      * @param exitAnim  出场动画
      */
@@ -126,10 +126,10 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras extras
-     * @param clz    activity类
+     * @param clz    Activity 类
      */
     public static void startActivity(@NonNull final Bundle extras, @NonNull final Class<?> clz) {
         Context context = getActivityOrApp();
@@ -137,10 +137,10 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras  extras
-     * @param clz     activity类
+     * @param clz     Activity 类
      * @param options 跳转动画
      */
     public static void startActivity(@NonNull final Bundle extras, @NonNull final Class<?> clz, @NonNull final Bundle options) {
@@ -149,10 +149,10 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras    extras
-     * @param clz       activity类
+     * @param clz       Activity 类
      * @param enterAnim 入场动画
      * @param exitAnim  出场动画
      */
@@ -165,22 +165,22 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras   extras
      * @param activity activity
-     * @param clz      activity类
+     * @param clz      Activity 类
      */
     public static void startActivity(@NonNull final Bundle extras, @NonNull final Activity activity, @NonNull final Class<?> clz) {
         startActivity(activity, extras, activity.getPackageName(), clz.getName(), null);
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras   extras
      * @param activity activity
-     * @param clz      activity类
+     * @param clz      Activity 类
      * @param options  跳转动画
      */
     public static void startActivity(@NonNull final Bundle extras, @NonNull final Activity activity, @NonNull final Class<?> clz, @NonNull final Bundle options) {
@@ -188,11 +188,11 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras         extras
      * @param activity       activity
-     * @param clz            activity类
+     * @param clz            Activity 类
      * @param sharedElements 共享元素
      */
     public static void startActivity(@NonNull final Bundle extras, @NonNull final Activity activity, @NonNull final Class<?> clz, @NonNull final View... sharedElements) {
@@ -200,11 +200,11 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras    extras
      * @param activity  activity
-     * @param clz       activity类
+     * @param clz       Activity 类
      * @param enterAnim 入场动画
      * @param exitAnim  出场动画
      */
@@ -216,7 +216,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param pkg 包名
      * @param cls 全类名
@@ -226,7 +226,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param pkg     包名
      * @param cls     全类名
@@ -237,7 +237,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param pkg       包名
      * @param cls       全类名
@@ -253,7 +253,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity activity
      * @param pkg      包名
@@ -264,7 +264,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity activity
      * @param pkg      包名
@@ -276,7 +276,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity       activity
      * @param pkg            包名
@@ -288,7 +288,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity  activity
      * @param pkg       包名
@@ -304,7 +304,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras extras
      * @param pkg    包名
@@ -315,7 +315,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras  extras
      * @param pkg     包名
@@ -327,7 +327,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras    extras
      * @param pkg       包名
@@ -344,7 +344,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity activity
      * @param extras   extras
@@ -356,7 +356,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras   extras
      * @param activity activity
@@ -369,7 +369,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras         extras
      * @param activity       activity
@@ -382,7 +382,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param extras    extras
      * @param pkg       包名
@@ -398,7 +398,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param intent 意图
      */
@@ -407,7 +407,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param intent  意图
      * @param options 跳转动画
@@ -417,7 +417,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param intent    意图
      * @param enterAnim 入场动画
@@ -432,7 +432,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity activity
      * @param intent   意图
@@ -442,7 +442,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity activity
      * @param intent   意图
@@ -453,7 +453,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity       activity
      * @param intent         意图
@@ -464,7 +464,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动Activity
+     * 启动 Activity
      *
      * @param activity  activity
      * @param intent    意图
@@ -479,7 +479,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动多个Activity
+     * 启动多个 Activity
      *
      * @param intents 意图
      */
@@ -488,7 +488,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动多个Activity
+     * 启动多个 Activity
      *
      * @param intents 意图
      * @param options 跳转动画
@@ -498,7 +498,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动多个Activity
+     * 启动多个 Activity
      *
      * @param intents   意图
      * @param enterAnim 入场动画
@@ -513,7 +513,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动多个Activity
+     * 启动多个 Activity
      *
      * @param activity activity
      * @param intents  意图
@@ -523,7 +523,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动多个Activity
+     * 启动多个 Activity
      *
      * @param activity activity
      * @param intents  意图
@@ -534,7 +534,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 启动多个Activity
+     * 启动多个 Activity
      *
      * @param activity  activity
      * @param intents   意图
@@ -558,28 +558,28 @@ public final class ActivityUtils {
     }
 
     /**
-     * 获取Activity栈链表
+     * 获取 Activity 栈链表
      *
-     * @return Activity栈链表
+     * @return Activity 栈链表
      */
     public static List<Activity> getActivityList() {
         return Utils.sActivityList;
     }
 
     /**
-     * 获取启动项Activity
+     * 获取启动项 Activity
      *
-     * @return 启动项Activity
+     * @return 启动项 Activity
      */
     public static String getLauncherActivity() {
         return getLauncherActivity(Utils.getApp().getPackageName());
     }
 
     /**
-     * 获取启动项Activity
+     * 获取启动项 Activity
      *
      * @param packageName 包名
-     * @return 启动项Activity
+     * @return 启动项 Activity
      */
     public static String getLauncherActivity(@NonNull final String packageName) {
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
@@ -596,9 +596,9 @@ public final class ActivityUtils {
     }
 
     /**
-     * 获取栈顶Activity
+     * 获取栈顶 Activity
      *
-     * @return 栈顶Activity
+     * @return 栈顶 Activity
      */
     public static Activity getTopActivity() {
         if (Utils.sTopActivityWeakRef != null) {
@@ -613,7 +613,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 判断Activity是否存在栈中
+     * 判断 Activity 是否存在栈中
      *
      * @param activity activity
      * @return {@code true}: 存在<br>{@code false}: 不存在
@@ -629,9 +629,9 @@ public final class ActivityUtils {
     }
 
     /**
-     * 判断Activity是否存在栈中
+     * 判断 Activity 是否存在栈中
      *
-     * @param clz activity类
+     * @param clz Activity 类
      * @return {@code true}: 存在<br>{@code false}: 不存在
      */
     public static boolean isActivityExistsInStack(@NonNull final Class<?> clz) {
@@ -645,7 +645,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束Activity
+     * 结束 Activity
      *
      * @param activity activity
      */
@@ -654,7 +654,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束Activity
+     * 结束 Activity
      *
      * @param activity   activity
      * @param isLoadAnim 是否启动动画
@@ -667,7 +667,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束Activity
+     * 结束 Activity
      *
      * @param activity  activity
      * @param enterAnim 入场动画
@@ -679,18 +679,18 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束Activity
+     * 结束 Activity
      *
-     * @param clz activity类
+     * @param clz Activity 类
      */
     public static void finishActivity(@NonNull final Class<?> clz) {
         finishActivity(clz, false);
     }
 
     /**
-     * 结束Activity
+     * 结束 Activity
      *
-     * @param clz        activity类
+     * @param clz        Activity 类
      * @param isLoadAnim 是否启动动画
      */
     public static void finishActivity(@NonNull final Class<?> clz, final boolean isLoadAnim) {
@@ -706,9 +706,9 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束Activity
+     * 结束 Activity
      *
-     * @param clz       activity类
+     * @param clz       Activity 类
      * @param enterAnim 入场动画
      * @param exitAnim  出场动画
      */
@@ -723,20 +723,20 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束到指定Activity
+     * 结束到指定 Activity
      *
      * @param activity      activity
-     * @param isIncludeSelf 是否结束该activity自己
+     * @param isIncludeSelf 是否结束该 activity 自己
      */
     public static boolean finishToActivity(@NonNull final Activity activity, final boolean isIncludeSelf) {
         return finishToActivity(activity, isIncludeSelf, false);
     }
 
     /**
-     * 结束到指定Activity
+     * 结束到指定 Activity
      *
      * @param activity      activity
-     * @param isIncludeSelf 是否结束该activity自己
+     * @param isIncludeSelf 是否结束该 activity 自己
      * @param isLoadAnim    是否启动动画
      */
     public static boolean finishToActivity(@NonNull final Activity activity, final boolean isIncludeSelf, final boolean isLoadAnim) {
@@ -755,10 +755,10 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束到指定Activity
+     * 结束到指定 Activity
      *
      * @param activity      activity
-     * @param isIncludeSelf 是否结束该activity自己
+     * @param isIncludeSelf 是否结束该 activity 自己
      * @param enterAnim     入场动画
      * @param exitAnim      出场动画
      */
@@ -778,20 +778,20 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束到指定Activity
+     * 结束到指定 Activity
      *
-     * @param clz           activity类
-     * @param isIncludeSelf 是否结束该activity自己
+     * @param clz           Activity 类
+     * @param isIncludeSelf 是否结束该 activity 自己
      */
     public static boolean finishToActivity(@NonNull final Class<?> clz, final boolean isIncludeSelf) {
         return finishToActivity(clz, isIncludeSelf, false);
     }
 
     /**
-     * 结束到指定Activity
+     * 结束到指定 Activity
      *
-     * @param clz           activity类
-     * @param isIncludeSelf 是否结束该activity自己
+     * @param clz           Activity 类
+     * @param isIncludeSelf 是否结束该 activity 自己
      * @param isLoadAnim    是否启动动画
      */
     public static boolean finishToActivity(@NonNull final Class<?> clz, final boolean isIncludeSelf, final boolean isLoadAnim) {
@@ -810,10 +810,10 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束到指定Activity
+     * 结束到指定 Activity
      *
-     * @param clz           activity类
-     * @param isIncludeSelf 是否结束该activity自己
+     * @param clz           Activity 类
+     * @param isIncludeSelf 是否结束该 activity 自己
      * @param enterAnim     入场动画
      * @param exitAnim      出场动画
      */
@@ -833,23 +833,22 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束除最新之外的同类型Activity
-     * <p>也就是让栈中最多只剩下一种类型的Activity</p>
+     * 结束所有其他类型的 Activity
      *
-     * @param clz activity类
+     * @param clz Activity 类
      */
-    public static void finishOtherActivitiesExceptNewest(@NonNull final Class<?> clz) {
-        finishOtherActivitiesExceptNewest(clz, false);
+    public static void finishOtherActivities(@NonNull final Class<?> clz) {
+        finishOtherActivities(clz, false);
     }
 
+
     /**
-     * 结束除最新之外的同类型Activity
-     * <p>也就是让栈中最多只剩下一种类型的Activity</p>
+     * 结束所有其他类型的 Activity
      *
-     * @param clz        activity类
+     * @param clz        Activity 类
      * @param isLoadAnim 是否启动动画
      */
-    public static void finishOtherActivitiesExceptNewest(@NonNull final Class<?> clz, final boolean isLoadAnim) {
+    public static void finishOtherActivities(@NonNull final Class<?> clz, final boolean isLoadAnim) {
         List<Activity> activities = Utils.sActivityList;
         boolean flag = false;
         for (int i = activities.size() - 1; i >= 0; i--) {
@@ -860,19 +859,20 @@ public final class ActivityUtils {
                 } else {
                     flag = true;
                 }
+            } else {
+                finishActivity(activity, isLoadAnim);
             }
         }
     }
 
     /**
-     * 结束除最新之外的同类型Activity
-     * <p>也就是让栈中最多只剩下一种类型的Activity</p>
+     * 结束所有其他类型的 Activity
      *
-     * @param clz       activity类
+     * @param clz       Activity 类
      * @param enterAnim 入场动画
      * @param exitAnim  出场动画
      */
-    public static void finishOtherActivitiesExceptNewest(@NonNull final Class<?> clz, @AnimRes final int enterAnim, @AnimRes final int exitAnim) {
+    public static void finishOtherActivities(@NonNull final Class<?> clz, @AnimRes final int enterAnim, @AnimRes final int exitAnim) {
         List<Activity> activities = Utils.sActivityList;
         boolean flag = false;
         for (int i = activities.size() - 1; i >= 0; i--) {
@@ -883,19 +883,21 @@ public final class ActivityUtils {
                 } else {
                     flag = true;
                 }
+            } else {
+                finishActivity(activity, enterAnim, exitAnim);
             }
         }
     }
 
     /**
-     * 结束所有activity
+     * 结束所有 Activity
      */
     public static void finishAllActivities() {
         finishAllActivities(false);
     }
 
     /**
-     * 结束所有activity
+     * 结束所有 Activity
      *
      * @param isLoadAnim 是否启动动画
      */
@@ -903,7 +905,7 @@ public final class ActivityUtils {
         List<Activity> activityList = Utils.sActivityList;
         for (int i = activityList.size() - 1; i >= 0; --i) {// 从栈顶开始移除
             Activity activity = activityList.get(i);
-            activity.finish();// 在onActivityDestroyed发生remove
+            activity.finish();// 在 onActivityDestroyed 发生 remove
             if (!isLoadAnim) {
                 activity.overridePendingTransition(0, 0);
             }
@@ -911,7 +913,7 @@ public final class ActivityUtils {
     }
 
     /**
-     * 结束所有activity
+     * 结束所有 Activity
      *
      * @param enterAnim 入场动画
      * @param exitAnim  出场动画
@@ -920,8 +922,42 @@ public final class ActivityUtils {
         List<Activity> activityList = Utils.sActivityList;
         for (int i = activityList.size() - 1; i >= 0; --i) {// 从栈顶开始移除
             Activity activity = activityList.get(i);
-            activity.finish();// 在onActivityDestroyed发生remove
+            activity.finish();// 在 onActivityDestroyed 发生 remove
             activity.overridePendingTransition(enterAnim, exitAnim);
+        }
+    }
+
+    /**
+     * 结束除最新之外的所有 Activity
+     */
+    public static void finishAllActivitiesExceptNewest() {
+        finishAllActivitiesExceptNewest(false);
+    }
+
+    /**
+     * 结束除最新之外的所有 Activity
+     *
+     * @param isLoadAnim 是否启动动画
+     */
+    public static void finishAllActivitiesExceptNewest(final boolean isLoadAnim) {
+        List<Activity> activities = Utils.sActivityList;
+        boolean flag = false;
+        for (int i = activities.size() - 2; i >= 0; i--) {
+            finishActivity(activities.get(i), isLoadAnim);
+        }
+    }
+
+    /**
+     * 结束除最新之外的所有 Activity
+     *
+     * @param enterAnim 入场动画
+     * @param exitAnim  出场动画
+     */
+    public static void finishAllActivitiesExceptNewest(@AnimRes final int enterAnim, @AnimRes final int exitAnim) {
+        List<Activity> activities = Utils.sActivityList;
+        boolean flag = false;
+        for (int i = activities.size() - 2; i >= 0; i--) {
+            finishActivity(activities.get(i), enterAnim, exitAnim);
         }
     }
 
