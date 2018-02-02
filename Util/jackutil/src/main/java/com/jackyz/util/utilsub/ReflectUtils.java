@@ -1,18 +1,16 @@
 package com.jackyz.util.utilsub;
 
-import android.support.annotation.NonNull;
-
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * /**
@@ -28,524 +26,399 @@ public final class ReflectUtils {
 
     private final Object object;
 
-    private ReflectUtils(Class<?> type) {
+    private ReflectUtils(final Class<?> type) {
         this(type, type);
     }
 
-    private ReflectUtils(Class<?> type, Object object) {
+    private ReflectUtils(final Class<?> type, Object object) {
         this.type = type;
         this.object = object;
     }
 
-    public static ReflectUtils init(@NonNull final String name) {
-        return init(forName(name));
+    ///////////////////////////////////////////////////////////////////////////
+    // reflect
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 设置要反射的类
+     *
+     * @param className 完整类名
+     * @return {@link ReflectUtils}
+     * @throws ReflectException 反射异常
+     */
+    public static ReflectUtils reflect(final String className)
+            throws ReflectException {
+        return reflect(forName(className));
     }
 
-    public static ReflectUtils init(@NonNull final String name, @NonNull final ClassLoader classLoader) {
-        return init(forName(name, classLoader));
+    /**
+     * 设置要反射的类
+     *
+     * @param className   完整类名
+     * @param classLoader 类加载器
+     * @return {@link ReflectUtils}
+     * @throws ReflectException 反射异常
+     */
+    public static ReflectUtils reflect(final String className, final ClassLoader classLoader)
+            throws ReflectException {
+        return reflect(forName(className, classLoader));
     }
 
-    public static ReflectUtils init(@NonNull final Class<?> clazz) {
+    /**
+     * 设置要反射的类
+     *
+     * @param clazz 类的类型
+     * @return {@link ReflectUtils}
+     * @throws ReflectException 反射异常
+     */
+    public static ReflectUtils reflect(final Class<?> clazz)
+            throws ReflectException {
         return new ReflectUtils(clazz);
     }
 
-    public static ReflectUtils init(@NonNull final Object object) {
-        return new ReflectUtils(object.getClass(), object);
+    /**
+     * 设置要反射的类
+     *
+     * @param object 类对象
+     * @return {@link ReflectUtils}
+     * @throws ReflectException 反射异常
+     */
+    public static ReflectUtils reflect(final Object object)
+            throws ReflectException {
+        return new ReflectUtils(object == null ? Object.class : object.getClass(), object);
     }
 
-    private static ReflectUtils init(Class<?> type, Object object) {
-        return new ReflectUtils(type, object);
+    private static Class<?> forName(String className) {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new ReflectException(e);
+        }
     }
 
-    public static <T extends AccessibleObject> T accessible(@NonNull final T accessible) {
-        if (accessible instanceof Member) {
-            Member member = (Member) accessible;
-            if (Modifier.isPublic(member.getModifiers()) && Modifier.isPublic(member.getDeclaringClass().getModifiers())) {
-                return accessible;
-            }
+    private static Class<?> forName(String name, ClassLoader classLoader) {
+        try {
+            return Class.forName(name, true, classLoader);
+        } catch (ClassNotFoundException e) {
+            throw new ReflectException(e);
         }
-        if (!accessible.isAccessible()) {
-            accessible.setAccessible(true);
-        }
-        return accessible;
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Members
+    // newInstance
     ///////////////////////////////////////////////////////////////////////////
 
-    @SuppressWarnings("unchecked")
-    public <T> T get() {
-        return (T) object;
-    }
-
-    public ReflectUtils set(String name, Object value) {
-        try {
-            Field field = field0(name);
-            if ((field.getModifiers() & Modifier.FINAL) == Modifier.FINAL) {
-                Field modifiersField = Field.class.getDeclaredField("modifiers");
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-            }
-            field.set(object, unwrap(value));
-            return this;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public <T> T get(String name) {
-        return field(name).<T>get();
-    }
-
-    public ReflectUtils field(String name) {
-        try {
-            Field field = field0(name);
-            return init(field.getType(), field.get(object));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Field field0(String name) {
-        Class<?> t = type();
-        try {
-            return accessible(t.getField(name));
-        } catch (NoSuchFieldException e) {
-            do {
-                try {
-                    return accessible(t.getDeclaredField(name));
-                } catch (NoSuchFieldException ignore) {
-                }
-
-                t = t.getSuperclass();
-            } while (t != null);
-            throw new RuntimeException();
-        }
+    /**
+     * 实例化反射对象
+     *
+     * @return {@link ReflectUtils}
+     */
+    public ReflectUtils newInstance() {
+        return newInstance(new Object[0]);
     }
 
     /**
-     * Get a Map containing field names and wrapped values for the fields'
-     * values.
-     * <p>
-     * If the wrapped object is a {@link Class}, then this will return static
-     * fields. If the wrapped object is any other {@link Object}, then this will
-     * return instance fields.
-     * <p>
-     * These two calls are equivalent <code><pre>
-     * init(object).field("myField");
-     * init(object).fields().get("myField");
-     * </pre></code>
+     * 实例化反射对象
      *
-     * @return A map containing field names and wrapped values.
+     * @param args 实例化需要的参数
+     * @return {@link ReflectUtils}
      */
-    public Map<String, ReflectUtils> fields() {
-        Map<String, ReflectUtils> result = new LinkedHashMap<String, ReflectUtils>();
-        Class<?> t = type();
-
-        do {
-            for (Field field : t.getDeclaredFields()) {
-                if (type != object ^ Modifier.isStatic(field.getModifiers())) {
-                    String name = field.getName();
-
-                    if (!result.containsKey(name)) result.put(name, field(name));
+    public ReflectUtils newInstance(Object... args) {
+        Class<?>[] types = getArgsType(args);
+        try {
+            Constructor<?> constructor = type().getDeclaredConstructor(types);
+            return newInstance(constructor, args);
+        } catch (NoSuchMethodException e) {
+            List<Constructor<?>> list = new ArrayList<>();
+            for (Constructor<?> constructor : type().getDeclaredConstructors()) {
+                if (match(constructor.getParameterTypes(), types)) {
+                    list.add(constructor);
                 }
             }
+            if (list.isEmpty()) {
+                throw new ReflectException(e);
+            } else {
+                sortConstructors(list);
+                return newInstance(list.get(0), args);
+            }
+        }
+    }
 
-            t = t.getSuperclass();
-        } while (t != null);
-
+    private Class<?>[] getArgsType(final Object... args) {
+        if (args == null) return new Class[0];
+        Class<?>[] result = new Class[args.length];
+        for (int i = 0; i < args.length; i++) {
+            Object value = args[i];
+            result[i] = value == null ? NULL.class : value.getClass();
+        }
         return result;
     }
 
+    private void sortConstructors(List<Constructor<?>> list) {
+        Collections.sort(list, new Comparator<Constructor<?>>() {
+            @Override
+            public int compare(Constructor<?> o1, Constructor<?> o2) {
+                Class<?>[] types1 = o1.getParameterTypes();
+                Class<?>[] types2 = o2.getParameterTypes();
+                int len = types1.length;
+                for (int i = 0; i < len; i++) {
+                    if (!types1[i].equals(types2[i])) {
+                        if (wrapper(types1[i]).isAssignableFrom(wrapper(types2[i]))) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    }
+                }
+                return 0;
+            }
+        });
+    }
+
+    private ReflectUtils newInstance(final Constructor<?> constructor, final Object... args) {
+        try {
+            return new ReflectUtils(
+                    constructor.getDeclaringClass(),
+                    accessible(constructor).newInstance(args)
+            );
+        } catch (Exception e) {
+            throw new ReflectException(e);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // field
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
-     * Call a method by its name.
-     * <p>
-     * This is a convenience method for calling
-     * <code>call(name, new Object[0])</code>
+     * 设置反射的字段
      *
-     * @param name The method name
-     * @return The wrapped method result or the same wrapped object if the
-     * method returns <code>void</code>, to be used for further
-     * reflection.
-     * @throws RuntimeException If any reflection exception occurred.
-     * @see #call(String, Object...)
+     * @param name 字段名
+     * @return {@link ReflectUtils}
      */
-    public ReflectUtils call(String name) {
-        return call(name, new Object[0]);
+    public ReflectUtils field(final String name) {
+        try {
+            Field field = getField(name);
+            return new ReflectUtils(field.getType(), field.get(object));
+        } catch (IllegalAccessException e) {
+            throw new ReflectException(e);
+        }
     }
 
     /**
-     * Call a method by its name.
-     * <p>
-     * This is roughly equivalent to {@link Method#invoke(Object, Object...)}.
-     * If the wrapped object is a {@link Class}, then this will invoke a static
-     * method. If the wrapped object is any other {@link Object}, then this will
-     * invoke an instance method.
-     * <p>
-     * Just like {@link Method#invoke(Object, Object...)}, this will try to wrap
-     * primitive types or unwrap primitive type wrappers if applicable. If
-     * several methods are applicable, by that rule, the first one encountered
-     * is called. i.e. when calling <code><pre>
-     * init(...).call("method", 1, 1);
-     * </pre></code> The first of the following methods will be called:
-     * <code><pre>
-     * public void method(int param1, Integer param2);
-     * public void method(Integer param1, int param2);
-     * public void method(Number param1, Number param2);
-     * public void method(Number param1, Object param2);
-     * public void method(int param1, Object param2);
-     * </pre></code>
-     * <p>
-     * The best matching method is searched for with the following strategy:
-     * <ol>
-     * <li>public method with exact signature match in class hierarchy</li>
-     * <li>non-public method with exact signature match init declaring class</li>
-     * <li>public method with similar signature in class hierarchy</li>
-     * <li>non-public method with similar signature init declaring class</li>
-     * </ol>
+     * 设置反射的字段
      *
-     * @param name The method name
-     * @param args The method arguments
-     * @return The wrapped method result or the same wrapped object if the
-     * method returns <code>void</code>, to be used for further
-     * reflection.
-     * @throws RuntimeException If any reflection exception occurred.
+     * @param name  字段名
+     * @param value 字段值
+     * @return {@link ReflectUtils}
      */
-    public ReflectUtils call(String name, Object... args) {
-        Class<?>[] types = types(args);
+    public ReflectUtils field(String name, Object value) {
+        try {
+            Field field = getField(name);
+            field.set(object, unwrap(value));
+            return this;
+        } catch (Exception e) {
+            throw new ReflectException(e);
+        }
+    }
 
-        // Try invoking the "canonical" method, i.e. the one with exact
-        // matching argument types
+    private Field getField(String name) throws IllegalAccessException {
+        Field field = getAccessibleField(name);
+        if ((field.getModifiers() & Modifier.FINAL) == Modifier.FINAL) {
+            try {
+                Field modifiersField = Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            } catch (NoSuchFieldException ignore) {
+                // runs in android will happen
+            }
+        }
+        return field;
+    }
+
+    private Field getAccessibleField(String name) {
+        Class<?> type = type();
+        try {
+            return accessible(type.getField(name));
+        } catch (NoSuchFieldException e) {
+            do {
+                try {
+                    return accessible(type.getDeclaredField(name));
+                } catch (NoSuchFieldException ignore) {
+                }
+                type = type.getSuperclass();
+            } while (type != null);
+            throw new ReflectException(e);
+        }
+    }
+
+    private Object unwrap(Object object) {
+        if (object instanceof ReflectUtils) {
+            return ((ReflectUtils) object).get();
+        }
+        return object;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // method
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 设置反射的方法
+     *
+     * @param name 方法名
+     * @return {@link ReflectUtils}
+     * @throws ReflectException 反射异常
+     */
+    public ReflectUtils method(final String name) throws ReflectException {
+        return method(name, new Object[0]);
+    }
+
+    /**
+     * 设置反射的方法
+     *
+     * @param name 方法名
+     * @param args 方法需要的参数
+     * @return {@link ReflectUtils}
+     * @throws ReflectException 反射异常
+     */
+    public ReflectUtils method(final String name, final Object... args) throws ReflectException {
+        Class<?>[] types = getArgsType(args);
         try {
             Method method = exactMethod(name, types);
-            return init(method, object, args);
-        }
-
-        // If there is no exact match, try to find a method that has a "similar"
-        // signature if primitive argument types are converted to their wrappers
-        catch (NoSuchMethodException e) {
+            return method(method, object, args);
+        } catch (NoSuchMethodException e) {
             try {
                 Method method = similarMethod(name, types);
-                return init(method, object, args);
+                return method(method, object, args);
             } catch (NoSuchMethodException e1) {
-                throw new RuntimeException(e1);
+                throw new ReflectException(e1);
             }
         }
     }
 
-    /**
-     * Searches a method with the exact same signature as desired.
-     * <p>
-     * If a public method is found in the class hierarchy, this method is returned.
-     * Otherwise a private method with the exact same signature is returned.
-     * If no exact match could be found, we let the {@code NoSuchMethodException} pass through.
-     */
-    private Method exactMethod(String name, Class<?>[] types) throws NoSuchMethodException {
-        Class<?> t = type();
-
-        // first priority: find a public method with exact signature match in class hierarchy
+    private ReflectUtils method(final Method method, final Object obj, final Object... args) {
         try {
-            return t.getMethod(name, types);
+            accessible(method);
+            if (method.getReturnType() == void.class) {
+                method.invoke(obj, args);
+                return reflect(obj);
+            } else {
+                return reflect(method.invoke(obj, args));
+            }
+        } catch (Exception e) {
+            throw new ReflectException(e);
         }
+    }
 
-        // second priority: find a private method with exact signature match init declaring class
-        catch (NoSuchMethodException e) {
+    private Method exactMethod(final String name, final Class<?>[] types)
+            throws NoSuchMethodException {
+        Class<?> type = type();
+        try {
+            return type.getMethod(name, types);
+        } catch (NoSuchMethodException e) {
             do {
                 try {
-                    return t.getDeclaredMethod(name, types);
+                    return type.getDeclaredMethod(name, types);
                 } catch (NoSuchMethodException ignore) {
                 }
-
-                t = t.getSuperclass();
-            } while (t != null);
-
+                type = type.getSuperclass();
+            } while (type != null);
             throw new NoSuchMethodException();
         }
     }
 
-    /**
-     * Searches a method with a similar signature as desired using
-     * {@link #isSimilarSignature(Method, String, Class[])}.
-     * <p>
-     * First public methods are searched in the class hierarchy, then private
-     * methods init the declaring class. If a method could be found, it is
-     * returned, otherwise a {@code NoSuchMethodException} is thrown.
-     */
-    private Method similarMethod(String name, Class<?>[] types) throws NoSuchMethodException {
-        Class<?> t = type();
-
-        // first priority: find a public method with a "similar" signature in class hierarchy
-        // similar interpreted in when primitive argument types are converted to their wrappers
-        for (Method method : t.getMethods()) {
+    private Method similarMethod(final String name, final Class<?>[] types)
+            throws NoSuchMethodException {
+        Class<?> type = type();
+        List<Method> methods = new ArrayList<>();
+        for (Method method : type.getMethods()) {
             if (isSimilarSignature(method, name, types)) {
-                return method;
+                methods.add(method);
             }
         }
-
-        // second priority: find a non-public method with a "similar" signature init declaring class
+        if (!methods.isEmpty()) {
+            sortMethods(methods);
+            return methods.get(0);
+        }
         do {
-            for (Method method : t.getDeclaredMethods()) {
+            for (Method method : type.getDeclaredMethods()) {
                 if (isSimilarSignature(method, name, types)) {
-                    return method;
+                    methods.add(method);
                 }
             }
-
-            t = t.getSuperclass();
-        } while (t != null);
-
-        throw new NoSuchMethodException("No similar method " + name + " with params " + Arrays.toString(types) + " could be found init type " + type() + ".");
-    }
-
-    /**
-     * Determines if a method has a "similar" signature, especially if wrapping
-     * primitive argument types would result in an exactly matching signature.
-     */
-    private boolean isSimilarSignature(Method possiblyMatchingMethod, String desiredMethodName, Class<?>[] desiredParamTypes) {
-        return possiblyMatchingMethod.getName().equals(desiredMethodName) && match(possiblyMatchingMethod.getParameterTypes(), desiredParamTypes);
-    }
-
-    /**
-     * Call a constructor.
-     * <p>
-     * This is a convenience method for calling
-     * <code>create(new Object[0])</code>
-     *
-     * @return The wrapped new object, to be used for further reflection.
-     * @throws RuntimeException If any reflection exception occurred.
-     * @see #create(Object...)
-     */
-    public ReflectUtils create() {
-        return create(new Object[0]);
-    }
-
-    /**
-     * Call a constructor.
-     * <p>
-     * This is roughly equivalent to {@link Constructor#newInstance(Object...)}.
-     * If the wrapped object is a {@link Class}, then this will create a new
-     * object of that class. If the wrapped object is any other {@link Object},
-     * then this will create a new object of the same type.
-     * <p>
-     * Just like {@link Constructor#newInstance(Object...)}, this will try to
-     * wrap primitive types or unwrap primitive type wrappers if applicable. If
-     * several constructors are applicable, by that rule, the first one
-     * encountered is called. i.e. when calling <code><pre>
-     * init(C.class).create(1, 1);
-     * </pre></code> The first of the following constructors will be applied:
-     * <code><pre>
-     * public C(int param1, Integer param2);
-     * public C(Integer param1, int param2);
-     * public C(Number param1, Number param2);
-     * public C(Number param1, Object param2);
-     * public C(int param1, Object param2);
-     * </pre></code>
-     *
-     * @param args The constructor arguments
-     * @return The wrapped new object, to be used for further reflection.
-     * @throws RuntimeException If any reflection exception occurred.
-     */
-    public ReflectUtils create(Object... args) {
-        Class<?>[] types = types(args);
-
-        // Try invoking the "canonical" constructor, i.e. the one with exact
-        // matching argument types
-        try {
-            Constructor<?> constructor = type().getDeclaredConstructor(types);
-            return init(constructor, args);
-        }
-
-        // If there is no exact match, try to find one that has a "similar"
-        // signature if primitive argument types are converted to their wrappers
-        catch (NoSuchMethodException e) {
-            for (Constructor<?> constructor : type().getDeclaredConstructors()) {
-                if (match(constructor.getParameterTypes(), types)) {
-                    return init(constructor, args);
-                }
+            if (!methods.isEmpty()) {
+                sortMethods(methods);
+                return methods.get(0);
             }
+            type = type.getSuperclass();
+        } while (type != null);
 
-            throw new RuntimeException(e);
-        }
+        throw new NoSuchMethodException("No similar method " + name + " with params "
+                + Arrays.toString(types) + " could be found on type " + type() + ".");
     }
 
-    /**
-     * Create a proxy for the wrapped object allowing to typesafely invoke
-     * methods init it using a custom interface
-     *
-     * @param proxyType The interface type that is implemented by the proxy
-     * @return A proxy for the wrapped object
-     */
-    @SuppressWarnings("unchecked")
-    public <P> P as(final Class<P> proxyType) {
-        final boolean isMap = (object instanceof Map);
-        final InvocationHandler handler = new InvocationHandler() {
-            @SuppressWarnings("null")
+    private void sortMethods(final List<Method> methods) {
+        Collections.sort(methods, new Comparator<Method>() {
             @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                String name = method.getName();
-
-                // Actual method name matches always come first
-                try {
-                    return init(type, object).call(name, args).get();
-                }
-
-                // [#14] Emulate POJO behaviour init wrapped map objects
-                catch (RuntimeException e) {
-                    if (isMap) {
-                        Map<String, Object> map = (Map<String, Object>) object;
-                        int length = (args == null ? 0 : args.length);
-
-                        if (length == 0 && name.startsWith("get")) {
-                            return map.get(property(name.substring(3)));
-                        } else if (length == 0 && name.startsWith("is")) {
-                            return map.get(property(name.substring(2)));
-                        } else if (length == 1 && name.startsWith("set")) {
-                            map.put(property(name.substring(3)), args[0]);
-                            return null;
+            public int compare(Method o1, Method o2) {
+                Class<?>[] types1 = o1.getParameterTypes();
+                Class<?>[] types2 = o2.getParameterTypes();
+                int len = types1.length;
+                for (int i = 0; i < len; i++) {
+                    if (!types1[i].equals(types2[i])) {
+                        if (wrapper(types1[i]).isAssignableFrom(wrapper(types2[i]))) {
+                            return 1;
+                        } else {
+                            return -1;
                         }
                     }
-                    throw e;
                 }
+                return 0;
             }
-        };
-
-        return (P) Proxy.newProxyInstance(proxyType.getClassLoader(), new Class[]{proxyType}, handler);
+        });
     }
 
-    /**
-     * Get the POJO property name of an getter/setter
-     */
-    private static String property(String string) {
-        int length = string.length();
-
-        if (length == 0) {
-            return "";
-        } else if (length == 1) {
-            return string.toLowerCase();
-        } else {
-            return string.substring(0, 1).toLowerCase() + string.substring(1);
-        }
+    private boolean isSimilarSignature(final Method possiblyMatchingMethod,
+                                       final String desiredMethodName,
+                                       final Class<?>[] desiredParamTypes) {
+        return possiblyMatchingMethod.getName().equals(desiredMethodName)
+                && match(possiblyMatchingMethod.getParameterTypes(), desiredParamTypes);
     }
 
-    // ---------------------------------------------------------------------
-    // Object API
-    // ---------------------------------------------------------------------
-
-    /**
-     * Check whether two arrays of types match, converting primitive types to
-     * their corresponding wrappers.
-     */
-    private boolean match(Class<?>[] declaredTypes, Class<?>[] actualTypes) {
+    private boolean match(final Class<?>[] declaredTypes, final Class<?>[] actualTypes) {
         if (declaredTypes.length == actualTypes.length) {
             for (int i = 0; i < actualTypes.length; i++) {
-                if (actualTypes[i] == NULL.class) continue;
-
-                if (wrapper(declaredTypes[i]).isAssignableFrom(wrapper(actualTypes[i]))) continue;
-
+                if (actualTypes[i] == NULL.class
+                        || wrapper(declaredTypes[i]).isAssignableFrom(wrapper(actualTypes[i]))) {
+                    continue;
+                }
                 return false;
             }
-
             return true;
         } else {
             return false;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        return object.hashCode();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ReflectUtils) {
-            return object.equals(((ReflectUtils) obj).get());
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return object.toString();
-    }
-
-    // ---------------------------------------------------------------------
-    // Utility methods
-    // ---------------------------------------------------------------------
-
-    /**
-     * Wrap an object created from a constructor
-     */
-    private static ReflectUtils init(Constructor<?> constructor, Object... args) {
-        try {
-            return init(constructor.getDeclaringClass(), accessible(constructor).newInstance(args));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Wrap an object returned from a method
-     */
-    private static ReflectUtils init(Method method, Object object, Object... args) {
-        try {
-            accessible(method);
-
-            if (method.getReturnType() == void.class) {
-                method.invoke(object, args);
-                return init(object);
-            } else {
-                return init(method.invoke(object, args));
+    private <T extends AccessibleObject> T accessible(T accessible) {
+        if (accessible == null) return null;
+        if (accessible instanceof Member) {
+            Member member = (Member) accessible;
+            if (Modifier.isPublic(member.getModifiers())
+                    && Modifier.isPublic(member.getDeclaringClass().getModifiers())) {
+                return accessible;
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
+        if (!accessible.isAccessible()) accessible.setAccessible(true);
+        return accessible;
     }
 
-    /**
-     * Unwrap an object
-     */
-    private static Object unwrap(Object object) {
-        if (object instanceof ReflectUtils) {
-            return ((ReflectUtils) object).get();
-        }
-
-        return object;
-    }
-
-    /**
-     * Get an array of types for an array of objects
-     *
-     * @see Object#getClass()
-     */
-    private static Class<?>[] types(@NonNull final Object... values) {
-        Class<?>[] result = new Class[values.length];
-        for (int i = 0; i < values.length; i++) {
-            Object value = values[i];
-            result[i] = value == null ? NULL.class : value.getClass();
-        }
-        return result;
-    }
-
-    public Class<?> type() {
+    private Class<?> type() {
         return type;
     }
 
-    /**
-     * Get a wrapper type for a primitive type, or the argument type itself, if
-     * it is not a primitive type.
-     */
-    public static Class<?> wrapper(Class<?> type) {
+    private Class<?> wrapper(final Class<?> type) {
         if (type == null) {
             return null;
         } else if (type.isPrimitive()) {
@@ -569,28 +442,52 @@ public final class ReflectUtils {
                 return Void.class;
             }
         }
-
         return type;
+    }
+
+    /**
+     * 获取反射想要获取的
+     *
+     * @param <T> 返回的范型
+     * @return 反射想要获取的
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get() {
+        return (T) object;
+    }
+
+    @Override
+    public int hashCode() {
+        return object.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ReflectUtils && object.equals(((ReflectUtils) obj).get());
+    }
+
+    @Override
+    public String toString() {
+        return object.toString();
     }
 
     private static class NULL {
     }
 
+    public static class ReflectException extends RuntimeException {
 
-    private static Class<?> forName(String name) {
-        try {
-            return Class.forName(name);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        private static final long serialVersionUID = 858774075258496016L;
+
+        public ReflectException(String message) {
+            super(message);
+        }
+
+        public ReflectException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public ReflectException(Throwable cause) {
+            super(cause);
         }
     }
-
-    private static Class<?> forName(String name, ClassLoader classLoader) {
-        try {
-            return Class.forName(name, true, classLoader);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

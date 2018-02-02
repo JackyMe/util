@@ -8,14 +8,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.FloatRange;
@@ -38,6 +36,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.LeadingMarginSpan;
+import android.text.style.LineHeightSpan;
 import android.text.style.MaskFilterSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ReplacementSpan;
@@ -52,7 +51,6 @@ import android.text.style.UnderlineSpan;
 import android.text.style.UpdateAppearance;
 import android.util.Log;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -71,10 +69,10 @@ public final class SpanUtils {
 
     private static final int COLOR_DEFAULT = 0xFEFFFFFF;
 
-    public static final int ALIGN_BOTTOM = 0;
+    public static final int ALIGN_BOTTOM   = 0;
     public static final int ALIGN_BASELINE = 1;
-    public static final int ALIGN_CENTER = 2;
-    public static final int ALIGN_TOP = 3;
+    public static final int ALIGN_CENTER   = 2;
+    public static final int ALIGN_TOP      = 3;
 
     @IntDef({ALIGN_BOTTOM, ALIGN_BASELINE, ALIGN_CENTER, ALIGN_TOP})
     @Retention(RetentionPolicy.SOURCE)
@@ -83,56 +81,50 @@ public final class SpanUtils {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    private CharSequence mText;
-    private int flag;
-    private int foregroundColor;
-    private int backgroundColor;
-    private int lineHeight;
-    private int alignLine;
-    private int quoteColor;
-    private int stripeWidth;
-    private int quoteGapWidth;
-    private int first;
-    private int rest;
-    private int bulletColor;
-    private int bulletRadius;
-    private int bulletGapWidth;
-    private Bitmap iconMarginBitmap;
-    private Drawable iconMarginDrawable;
-    private Uri iconMarginUri;
-    private int iconMarginResourceId;
-    private int iconMarginGapWidth;
-    private int alignIconMargin;
-    private int fontSize;
-    private boolean fontSizeIsDp;
-    private float proportion;
-    private float xProportion;
-    private boolean isStrikethrough;
-    private boolean isUnderline;
-    private boolean isSuperscript;
-    private boolean isSubscript;
-    private boolean isBold;
-    private boolean isItalic;
-    private boolean isBoldItalic;
-    private String fontFamily;
-    private Typeface typeface;
-    private Alignment alignment;
+    private CharSequence  mText;
+    private int           flag;
+    private int           foregroundColor;
+    private int           backgroundColor;
+    private int           lineHeight;
+    private int           alignLine;
+    private int           quoteColor;
+    private int           stripeWidth;
+    private int           quoteGapWidth;
+    private int           first;
+    private int           rest;
+    private int           bulletColor;
+    private int           bulletRadius;
+    private int           bulletGapWidth;
+    private int           fontSize;
+    private boolean       fontSizeIsDp;
+    private float         proportion;
+    private float         xProportion;
+    private boolean       isStrikethrough;
+    private boolean       isUnderline;
+    private boolean       isSuperscript;
+    private boolean       isSubscript;
+    private boolean       isBold;
+    private boolean       isItalic;
+    private boolean       isBoldItalic;
+    private String        fontFamily;
+    private Typeface      typeface;
+    private Alignment     alignment;
     private ClickableSpan clickSpan;
-    private String url;
-    private float blurRadius;
-    private Blur style;
-    private Shader shader;
-    private float shadowRadius;
-    private float shadowDx;
-    private float shadowDy;
-    private int shadowColor;
-    private Object[] spans;
+    private String        url;
+    private float         blurRadius;
+    private Blur          style;
+    private Shader        shader;
+    private float         shadowRadius;
+    private float         shadowDx;
+    private float         shadowDy;
+    private int           shadowColor;
+    private Object[]      spans;
 
-    private Bitmap imageBitmap;
+    private Bitmap   imageBitmap;
     private Drawable imageDrawable;
-    private Uri imageUri;
-    private int imageResourceId;
-    private int alignImage;
+    private Uri      imageUri;
+    private int      imageResourceId;
+    private int      alignImage;
 
     private int spaceSize;
     private int spaceColor;
@@ -141,8 +133,8 @@ public final class SpanUtils {
 
     private int mType;
     private final int mTypeCharSequence = 0;
-    private final int mTypeImage = 1;
-    private final int mTypeSpace = 2;
+    private final int mTypeImage        = 1;
+    private final int mTypeSpace        = 2;
 
 
     public SpanUtils() {
@@ -159,11 +151,6 @@ public final class SpanUtils {
         quoteColor = COLOR_DEFAULT;
         first = -1;
         bulletColor = COLOR_DEFAULT;
-        iconMarginBitmap = null;
-        iconMarginDrawable = null;
-        iconMarginUri = null;
-        iconMarginResourceId = -1;
-        iconMarginGapWidth = -1;
         fontSize = -1;
         proportion = -1;
         xProportion = -1;
@@ -254,7 +241,8 @@ public final class SpanUtils {
      *                   </ul>
      * @return {@link SpanUtils}
      */
-    public SpanUtils setLineHeight(@IntRange(from = 0) final int lineHeight, @Align final int align) {
+    public SpanUtils setLineHeight(@IntRange(from = 0) final int lineHeight,
+                                   @Align final int align) {
         this.lineHeight = lineHeight;
         this.alignLine = align;
         return this;
@@ -278,7 +266,9 @@ public final class SpanUtils {
      * @param gapWidth    引用线和文字间距
      * @return {@link SpanUtils}
      */
-    public SpanUtils setQuoteColor(@ColorInt final int color, @IntRange(from = 1) final int stripeWidth, @IntRange(from = 0) final int gapWidth) {
+    public SpanUtils setQuoteColor(@ColorInt final int color,
+                                   @IntRange(from = 1) final int stripeWidth,
+                                   @IntRange(from = 0) final int gapWidth) {
         this.quoteColor = color;
         this.stripeWidth = stripeWidth;
         this.quoteGapWidth = gapWidth;
@@ -292,7 +282,8 @@ public final class SpanUtils {
      * @param rest  剩余行缩进
      * @return {@link SpanUtils}
      */
-    public SpanUtils setLeadingMargin(@IntRange(from = 0) final int first, @IntRange(from = 0) final int rest) {
+    public SpanUtils setLeadingMargin(@IntRange(from = 0) final int first,
+                                      @IntRange(from = 0) final int rest) {
         this.first = first;
         this.rest = rest;
         return this;
@@ -316,134 +307,12 @@ public final class SpanUtils {
      * @param gapWidth 列表标记和文字间距离
      * @return {@link SpanUtils}
      */
-    public SpanUtils setBullet(@ColorInt final int color, @IntRange(from = 0) final int radius, @IntRange(from = 0) final int gapWidth) {
+    public SpanUtils setBullet(@ColorInt final int color,
+                               @IntRange(from = 0) final int radius,
+                               @IntRange(from = 0) final int gapWidth) {
         this.bulletColor = color;
         this.bulletRadius = radius;
         this.bulletGapWidth = gapWidth;
-        return this;
-    }
-
-    /**
-     * 设置图标
-     * <p>默认0边距，居中对齐</p>
-     *
-     * @param bitmap 图标bitmap
-     * @return {@link SpanUtils}
-     */
-    public SpanUtils setIconMargin(final Bitmap bitmap) {
-        return setIconMargin(bitmap, 0, ALIGN_CENTER);
-    }
-
-    /**
-     * 设置图标
-     *
-     * @param bitmap   图标bitmap
-     * @param gapWidth 图标和文字间距离
-     * @param align    对齐
-     *                 <ul>
-     *                 <li>{@link Align#ALIGN_TOP}顶部对齐</li>
-     *                 <li>{@link Align#ALIGN_CENTER}居中对齐</li>
-     *                 <li>{@link Align#ALIGN_BOTTOM}底部对齐</li>
-     *                 </ul>
-     * @return {@link SpanUtils}
-     */
-    public SpanUtils setIconMargin(final Bitmap bitmap, final int gapWidth, @Align final int align) {
-        this.iconMarginBitmap = bitmap;
-        this.iconMarginGapWidth = gapWidth;
-        this.alignIconMargin = align;
-        return this;
-    }
-
-    /**
-     * 设置图标
-     * <p>默认0边距，居中对齐</p>
-     *
-     * @param drawable 图标drawable
-     * @return {@link SpanUtils}
-     */
-    public SpanUtils setIconMargin(final Drawable drawable) {
-        return setIconMargin(drawable, 0, ALIGN_CENTER);
-    }
-
-    /**
-     * 设置图标
-     *
-     * @param drawable 图标drawable
-     * @param gapWidth 图标和文字间距离
-     * @param align    对齐
-     *                 <ul>
-     *                 <li>{@link Align#ALIGN_TOP}顶部对齐</li>
-     *                 <li>{@link Align#ALIGN_CENTER}居中对齐</li>
-     *                 <li>{@link Align#ALIGN_BOTTOM}底部对齐</li>
-     *                 </ul>
-     * @return {@link SpanUtils}
-     */
-    public SpanUtils setIconMargin(final Drawable drawable, final int gapWidth, @Align final int align) {
-        this.iconMarginDrawable = drawable;
-        this.iconMarginGapWidth = gapWidth;
-        this.alignIconMargin = align;
-        return this;
-    }
-
-    /**
-     * 设置图标
-     * <p>默认0边距，居中对齐</p>
-     *
-     * @param uri 图标uri
-     * @return {@link SpanUtils}
-     */
-    public SpanUtils setIconMargin(final Uri uri) {
-        return setIconMargin(uri, 0, ALIGN_CENTER);
-    }
-
-    /**
-     * 设置图标
-     *
-     * @param uri      图标uri
-     * @param gapWidth 图标和文字间距离
-     * @param align    对齐
-     *                 <ul>
-     *                 <li>{@link Align#ALIGN_TOP}顶部对齐</li>
-     *                 <li>{@link Align#ALIGN_CENTER}居中对齐</li>
-     *                 <li>{@link Align#ALIGN_BOTTOM}底部对齐</li>
-     *                 </ul>
-     * @return {@link SpanUtils}
-     */
-    public SpanUtils setIconMargin(final Uri uri, final int gapWidth, @Align final int align) {
-        this.iconMarginUri = uri;
-        this.iconMarginGapWidth = gapWidth;
-        this.alignIconMargin = align;
-        return this;
-    }
-
-    /**
-     * 设置图标
-     * <p>默认0边距，居中对齐</p>
-     *
-     * @param resourceId 图标resourceId
-     * @return {@link SpanUtils}
-     */
-    public SpanUtils setIconMargin(@DrawableRes final int resourceId) {
-        return setIconMargin(resourceId, 0, ALIGN_CENTER);
-    }
-
-    /**
-     * 设置图标
-     *
-     * @param resourceId 图标resourceId
-     * @param gapWidth   图标和文字间距离
-     * @param align      对齐
-     *                   <ul>
-     *                   <li>{@link Align#ALIGN_TOP}顶部对齐</li>
-     *                   <li>{@link Align#ALIGN_CENTER}居中对齐</li>
-     *                   <li>{@link Align#ALIGN_BOTTOM}底部对齐</li>
-     *                   </ul>
-     * @return {@link SpanUtils}
-     */
-    public SpanUtils setIconMargin(@DrawableRes final int resourceId, final int gapWidth, @Align final int align) {
-        this.iconMarginResourceId = resourceId;
-        this.iconMarginGapWidth = gapWidth;
-        this.alignIconMargin = align;
         return this;
     }
 
@@ -461,7 +330,7 @@ public final class SpanUtils {
      * 设置字体尺寸
      *
      * @param size 尺寸
-     * @param isDp 是否使用dip
+     * @param isDp 是否使用 dip
      * @return {@link SpanUtils}
      */
     public SpanUtils setFontSize(@IntRange(from = 0) final int size, final boolean isDp) {
@@ -476,7 +345,7 @@ public final class SpanUtils {
      * @param proportion 比例
      * @return {@link SpanUtils}
      */
-    public SpanUtils setFontProportion(@FloatRange(from = 0, fromInclusive = false) final float proportion) {
+    public SpanUtils setFontProportion(final float proportion) {
         this.proportion = proportion;
         return this;
     }
@@ -487,7 +356,7 @@ public final class SpanUtils {
      * @param proportion 比例
      * @return {@link SpanUtils}
      */
-    public SpanUtils setFontXProportion(@FloatRange(from = 0, fromInclusive = false) final float proportion) {
+    public SpanUtils setFontXProportion(final float proportion) {
         this.xProportion = proportion;
         return this;
     }
@@ -607,7 +476,7 @@ public final class SpanUtils {
 
     /**
      * 设置点击事件
-     * <p>需添加view.setMovementMethod(LinkMovementMethod.getInstance())</p>
+     * <p>需添加 view.setMovementMethod(LinkMovementMethod.getInstance())</p>
      *
      * @param clickSpan 点击事件
      * @return {@link SpanUtils}
@@ -619,7 +488,7 @@ public final class SpanUtils {
 
     /**
      * 设置超链接
-     * <p>需添加view.setMovementMethod(LinkMovementMethod.getInstance())</p>
+     * <p>需添加 view.setMovementMethod(LinkMovementMethod.getInstance())</p>
      *
      * @param url 超链接
      * @return {@link SpanUtils}
@@ -631,10 +500,10 @@ public final class SpanUtils {
 
     /**
      * 设置模糊
-     * <p>尚存bug，其他地方存在相同的字体的话，相同字体出现在之前的话那么就不会模糊，出现在之后的话那会一起模糊</p>
-     * <p>以上bug关闭硬件加速即可</p>
+     * <p>尚存 bug，其他地方存在相同的字体的话，相同字体出现在之前的话那么就不会模糊，出现在之后的话那会一起模糊</p>
+     * <p>以上 bug 关闭硬件加速即可</p>
      *
-     * @param radius 模糊半径（需大于0）
+     * @param radius 模糊半径（需大于 0）
      * @param style  模糊样式<ul>
      *               <li>{@link Blur#NORMAL}</li>
      *               <li>{@link Blur#SOLID}</li>
@@ -643,7 +512,8 @@ public final class SpanUtils {
      *               </ul>
      * @return {@link SpanUtils}
      */
-    public SpanUtils setBlur(@FloatRange(from = 0, fromInclusive = false) final float radius, final Blur style) {
+    public SpanUtils setBlur(@FloatRange(from = 0, fromInclusive = false) final float radius,
+                             final Blur style) {
         this.blurRadius = radius;
         this.style = style;
         return this;
@@ -664,12 +534,15 @@ public final class SpanUtils {
      * 设置阴影
      *
      * @param radius      阴影半径
-     * @param dx          x轴偏移量
-     * @param dy          y轴偏移量
+     * @param dx          x 轴偏移量
+     * @param dy          y 轴偏移量
      * @param shadowColor 阴影颜色
      * @return {@link SpanUtils}
      */
-    public SpanUtils setShadow(@FloatRange(from = 0, fromInclusive = false) final float radius, final float dx, final float dy, final int shadowColor) {
+    public SpanUtils setShadow(@FloatRange(from = 0, fromInclusive = false) final float radius,
+                               final float dx,
+                               final float dy,
+                               final int shadowColor) {
         this.shadowRadius = radius;
         this.shadowDx = dx;
         this.shadowDy = dy;
@@ -788,7 +661,7 @@ public final class SpanUtils {
     /**
      * 追加图片
      *
-     * @param uri 图片uri
+     * @param uri 图片 uri
      * @return {@link SpanUtils}
      */
     public SpanUtils appendImage(@NonNull final Uri uri) {
@@ -798,7 +671,7 @@ public final class SpanUtils {
     /**
      * 追加图片
      *
-     * @param uri   图片uri
+     * @param uri   图片 uri
      * @param align 对齐
      *              <ul>
      *              <li>{@link Align#ALIGN_TOP}顶部对齐</li>
@@ -818,7 +691,7 @@ public final class SpanUtils {
     /**
      * 追加图片
      *
-     * @param resourceId 图片资源id
+     * @param resourceId 图片资源 id
      * @return {@link SpanUtils}
      */
     public SpanUtils appendImage(@DrawableRes final int resourceId) {
@@ -828,11 +701,12 @@ public final class SpanUtils {
     /**
      * 追加图片
      *
-     * @param resourceId 图片资源id
+     * @param resourceId 图片资源 id
      * @param align      对齐
      * @return {@link SpanUtils}
      */
     public SpanUtils appendImage(@DrawableRes final int resourceId, @Align final int align) {
+        append(Character.toString((char) 0));// it's important for span start with image
         apply(mTypeImage);
         this.imageResourceId = resourceId;
         this.alignImage = align;
@@ -907,22 +781,52 @@ public final class SpanUtils {
             mBuilder.setSpan(new LeadingMarginSpan.Standard(first, rest), start, end, flag);
         }
         if (quoteColor != COLOR_DEFAULT) {
-            mBuilder.setSpan(new CustomQuoteSpan(quoteColor, stripeWidth, quoteGapWidth), start, end, flag);
+            mBuilder.setSpan(
+                    new CustomQuoteSpan(quoteColor, stripeWidth, quoteGapWidth),
+                    start,
+                    end,
+                    flag
+            );
         }
         if (bulletColor != COLOR_DEFAULT) {
-            mBuilder.setSpan(new CustomBulletSpan(bulletColor, bulletRadius, bulletGapWidth), start, end, flag);
+            mBuilder.setSpan(
+                    new CustomBulletSpan(bulletColor, bulletRadius, bulletGapWidth),
+                    start,
+                    end,
+                    flag
+            );
         }
-        if (iconMarginGapWidth != -1) {
-            if (iconMarginBitmap != null) {
-                mBuilder.setSpan(new CustomIconMarginSpan(iconMarginBitmap, iconMarginGapWidth, alignIconMargin), start, end, flag);
-            } else if (iconMarginDrawable != null) {
-                mBuilder.setSpan(new CustomIconMarginSpan(iconMarginDrawable, iconMarginGapWidth, alignIconMargin), start, end, flag);
-            } else if (iconMarginUri != null) {
-                mBuilder.setSpan(new CustomIconMarginSpan(iconMarginUri, iconMarginGapWidth, alignIconMargin), start, end, flag);
-            } else if (iconMarginResourceId != -1) {
-                mBuilder.setSpan(new CustomIconMarginSpan(iconMarginResourceId, iconMarginGapWidth, alignIconMargin), start, end, flag);
-            }
-        }
+//        if (imGapWidth != -1) {
+//            if (imBitmap != null) {
+//                mBuilder.setSpan(
+//                        new CustomIconMarginSpan(imBitmap, imGapWidth, imAlign),
+//                        start,
+//                        end,
+//                        flag
+//                );
+//            } else if (imDrawable != null) {
+//                mBuilder.setSpan(
+//                        new CustomIconMarginSpan(imDrawable, imGapWidth, imAlign),
+//                        start,
+//                        end,
+//                        flag
+//                );
+//            } else if (imUri != null) {
+//                mBuilder.setSpan(
+//                        new CustomIconMarginSpan(imUri, imGapWidth, imAlign),
+//                        start,
+//                        end,
+//                        flag
+//                );
+//            } else if (imResourceId != -1) {
+//                mBuilder.setSpan(
+//                        new CustomIconMarginSpan(imResourceId, imGapWidth, imAlign),
+//                        start,
+//                        end,
+//                        flag
+//                );
+//            }
+//        }
         if (fontSize != -1) {
             mBuilder.setSpan(new AbsoluteSizeSpan(fontSize, fontSizeIsDp), start, end, flag);
         }
@@ -972,13 +876,23 @@ public final class SpanUtils {
             mBuilder.setSpan(new URLSpan(url), start, end, flag);
         }
         if (blurRadius != -1) {
-            mBuilder.setSpan(new MaskFilterSpan(new BlurMaskFilter(blurRadius, style)), start, end, flag);
+            mBuilder.setSpan(
+                    new MaskFilterSpan(new BlurMaskFilter(blurRadius, style)),
+                    start,
+                    end,
+                    flag
+            );
         }
         if (shader != null) {
             mBuilder.setSpan(new ShaderSpan(shader), start, end, flag);
         }
         if (shadowRadius != -1) {
-            mBuilder.setSpan(new ShadowSpan(shadowRadius, shadowDx, shadowDy, shadowColor), start, end, flag);
+            mBuilder.setSpan(
+                    new ShadowSpan(shadowRadius, shadowDx, shadowDy, shadowColor),
+                    start,
+                    end,
+                    flag
+            );
         }
         if (spans != null) {
             for (Object span : spans) {
@@ -1012,7 +926,8 @@ public final class SpanUtils {
     /**
      * 行高
      */
-    class CustomLineHeightSpan extends CharacterStyle implements android.text.style.LineHeightSpan {
+    class CustomLineHeightSpan extends CharacterStyle
+            implements LineHeightSpan {
 
         private final int height;
 
@@ -1028,29 +943,30 @@ public final class SpanUtils {
         }
 
         @Override
-        public void chooseHeight(final CharSequence text, final int start, final int end, final int spanstartv, final int v, final Paint.FontMetricsInt fm) {
+        public void chooseHeight(final CharSequence text, final int start, final int end,
+                                 final int spanstartv, final int v, final Paint.FontMetricsInt fm) {
             int need = height - (v + fm.descent - fm.ascent - spanstartv);
-            if (need > 0) {
-                if (mVerticalAlignment == ALIGN_TOP) {
-                    fm.descent += need;
-                } else if (mVerticalAlignment == ALIGN_CENTER) {
-                    fm.descent += need / 2;
-                    fm.ascent -= need / 2;
-                } else {
-                    fm.ascent -= need;
-                }
+//            if (need > 0) {
+            if (mVerticalAlignment == ALIGN_TOP) {
+                fm.descent += need;
+            } else if (mVerticalAlignment == ALIGN_CENTER) {
+                fm.descent += need / 2;
+                fm.ascent -= need / 2;
+            } else {
+                fm.ascent -= need;
             }
+//            }
             need = height - (v + fm.bottom - fm.top - spanstartv);
-            if (need > 0) {
-                if (mVerticalAlignment == ALIGN_TOP) {
-                    fm.top += need;
-                } else if (mVerticalAlignment == ALIGN_CENTER) {
-                    fm.bottom += need / 2;
-                    fm.top -= need / 2;
-                } else {
-                    fm.top -= need;
-                }
+//            if (need > 0) {
+            if (mVerticalAlignment == ALIGN_TOP) {
+                fm.top += need;
+            } else if (mVerticalAlignment == ALIGN_CENTER) {
+                fm.bottom += need / 2;
+                fm.top -= need / 2;
+            } else {
+                fm.top -= need;
             }
+//            }
         }
 
         @Override
@@ -1078,12 +994,19 @@ public final class SpanUtils {
         }
 
         @Override
-        public int getSize(@NonNull final Paint paint, final CharSequence text, @IntRange(from = 0) final int start, @IntRange(from = 0) final int end, @Nullable final Paint.FontMetricsInt fm) {
+        public int getSize(@NonNull final Paint paint, final CharSequence text,
+                           @IntRange(from = 0) final int start,
+                           @IntRange(from = 0) final int end,
+                           @Nullable final Paint.FontMetricsInt fm) {
             return width;
         }
 
         @Override
-        public void draw(@NonNull final Canvas canvas, final CharSequence text, @IntRange(from = 0) final int start, @IntRange(from = 0) final int end, final float x, final int top, final int y, final int bottom, @NonNull final Paint paint) {
+        public void draw(@NonNull final Canvas canvas, final CharSequence text,
+                         @IntRange(from = 0) final int start,
+                         @IntRange(from = 0) final int end,
+                         final float x, final int top, final int y, final int bottom,
+                         @NonNull final Paint paint) {
             Paint.Style style = paint.getStyle();
             int color = paint.getColor();
 
@@ -1117,7 +1040,10 @@ public final class SpanUtils {
             return stripeWidth + gapWidth;
         }
 
-        public void drawLeadingMargin(final Canvas c, final Paint p, final int x, final int dir, final int top, final int baseline, final int bottom, final CharSequence text, final int start, final int end, final boolean first, final Layout layout) {
+        public void drawLeadingMargin(final Canvas c, final Paint p, final int x, final int dir,
+                                      final int top, final int baseline, final int bottom,
+                                      final CharSequence text, final int start, final int end,
+                                      final boolean first, final Layout layout) {
             Paint.Style style = p.getStyle();
             int color = p.getColor();
 
@@ -1152,7 +1078,10 @@ public final class SpanUtils {
             return 2 * radius + gapWidth;
         }
 
-        public void drawLeadingMargin(final Canvas c, final Paint p, final int x, final int dir, final int top, final int baseline, final int bottom, final CharSequence text, final int start, final int end, final boolean first, final Layout l) {
+        public void drawLeadingMargin(final Canvas c, final Paint p, final int x, final int dir,
+                                      final int top, final int baseline, final int bottom,
+                                      final CharSequence text, final int start, final int end,
+                                      final boolean first, final Layout l) {
             if (((Spanned) text).getSpanStart(this) == start) {
                 Paint.Style style = p.getStyle();
                 int oldColor = 0;
@@ -1174,159 +1103,6 @@ public final class SpanUtils {
                 }
                 p.setColor(oldColor);
                 p.setStyle(style);
-            }
-        }
-    }
-
-    class CustomIconMarginSpan implements LeadingMarginSpan, android.text.style.LineHeightSpan {
-        Bitmap mBitmap;
-
-        static final int ALIGN_CENTER = 2;
-
-        static final int ALIGN_TOP = 3;
-
-        final int mVerticalAlignment;
-
-        private int mPad;
-        private int totalHeight;
-        private int lineHeight;
-        private int need0;
-        private int need1;
-        private boolean flag;
-
-        private CustomIconMarginSpan(final Bitmap b, final int pad, final int verticalAlignment) {
-            mBitmap = b;
-            mPad = pad;
-            mVerticalAlignment = verticalAlignment;
-        }
-
-        private CustomIconMarginSpan(final Drawable drawable, final int pad, final int verticalAlignment) {
-            mBitmap = drawable2Bitmap(drawable);
-            mPad = pad;
-            mVerticalAlignment = verticalAlignment;
-        }
-
-        private CustomIconMarginSpan(final Uri uri, final int pad, final int verticalAlignment) {
-            mBitmap = uri2Bitmap(uri);
-            mPad = pad;
-            mVerticalAlignment = verticalAlignment;
-        }
-
-        private CustomIconMarginSpan(final int resourceId, final int pad, final int verticalAlignment) {
-            mBitmap = resource2Bitmap(resourceId);
-            mPad = pad;
-            mVerticalAlignment = verticalAlignment;
-        }
-
-        private Bitmap drawable2Bitmap(final Drawable drawable) {
-            if (drawable instanceof BitmapDrawable) {
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-                if (bitmapDrawable.getBitmap() != null) {
-                    return bitmapDrawable.getBitmap();
-                }
-            }
-            Bitmap bitmap;
-            if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-                bitmap = Bitmap.createBitmap(1, 1, drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
-            } else {
-                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
-            }
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-            return bitmap;
-        }
-
-        private Bitmap uri2Bitmap(final Uri uri) {
-            try {
-                return MediaStore.Images.Media.getBitmap(Utils.getApp().getContentResolver(), uri);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            }
-        }
-
-        private Bitmap resource2Bitmap(final int resourceId) {
-            Drawable drawable = ContextCompat.getDrawable(Utils.getApp(), resourceId);
-            Canvas canvas = new Canvas();
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            canvas.setBitmap(bitmap);
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            drawable.draw(canvas);
-            return bitmap;
-        }
-
-        public int getLeadingMargin(final boolean first) {
-            return mBitmap.getWidth() + mPad;
-        }
-
-        public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top, int baseline, int bottom, CharSequence text, int start, int end, boolean first, Layout layout) {
-            int st = ((Spanned) text).getSpanStart(this);
-            int itop = layout.getLineTop(layout.getLineForOffset(st));
-
-            if (dir < 0) x -= mBitmap.getWidth();
-
-            int delta = totalHeight - mBitmap.getHeight();
-
-            if (delta > 0) {
-                if (mVerticalAlignment == ALIGN_TOP) {
-                    c.drawBitmap(mBitmap, x, itop, p);
-                } else if (mVerticalAlignment == ALIGN_CENTER) {
-                    c.drawBitmap(mBitmap, x, itop + delta / 2, p);
-                } else {
-                    c.drawBitmap(mBitmap, x, itop + delta, p);
-                }
-            } else {
-                c.drawBitmap(mBitmap, x, itop, p);
-            }
-        }
-
-        public void chooseHeight(CharSequence text, int start, int end, int istartv, int v, Paint.FontMetricsInt fm) {
-            if (lineHeight == 0) {
-                lineHeight = v - istartv;
-            }
-            if (need0 == 0 && end == ((Spanned) text).getSpanEnd(this)) {
-                int ht = mBitmap.getHeight();
-                need0 = ht - (v + fm.descent - fm.ascent - istartv);
-                need1 = ht - (v + fm.bottom - fm.top - istartv);
-                totalHeight = v - istartv + lineHeight;
-                return;
-            }
-            if (need0 > 0 || need1 > 0) {
-                if (mVerticalAlignment == ALIGN_TOP) {
-                    // the rest space should be filled with the end of line
-                    if (end == ((Spanned) text).getSpanEnd(this)) {
-                        if (need0 > 0) fm.descent += need0;
-                        if (need1 > 0) fm.bottom += need1;
-                    }
-                } else if (mVerticalAlignment == ALIGN_CENTER) {
-                    if (start == ((Spanned) text).getSpanStart(this)) {
-                        if (need0 > 0) fm.ascent -= need0 / 2;
-                        if (need1 > 0) fm.top -= need1 / 2;
-                    } else {
-                        if (!flag) {
-                            if (need0 > 0) fm.ascent += need0 / 2;
-                            if (need1 > 0) fm.top += need1 / 2;
-                            flag = true;
-                        }
-                    }
-                    if (end == ((Spanned) text).getSpanEnd(this)) {
-                        if (need0 > 0) fm.descent += need0 / 2;
-                        if (need1 > 0) fm.bottom += need1 / 2;
-                    }
-                } else {
-                    // the top space should be filled with the first of line
-                    if (start == ((Spanned) text).getSpanStart(this)) {
-                        if (need0 > 0) fm.ascent -= need0;
-                        if (need1 > 0) fm.top -= need1;
-                    } else {
-                        if (!flag) {
-                            if (need0 > 0) fm.ascent += need0;
-                            if (need1 > 0) fm.top += need1;
-                            flag = true;
-                        }
-                    }
-                }
             }
         }
     }
@@ -1377,19 +1153,23 @@ public final class SpanUtils {
 
     class CustomImageSpan extends CustomDynamicDrawableSpan {
         private Drawable mDrawable;
-        private Uri mContentUri;
-        private int mResourceId;
+        private Uri      mContentUri;
+        private int      mResourceId;
 
         private CustomImageSpan(final Bitmap b, final int verticalAlignment) {
             super(verticalAlignment);
             mDrawable = new BitmapDrawable(Utils.getApp().getResources(), b);
-            mDrawable.setBounds(0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight());
+            mDrawable.setBounds(
+                    0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()
+            );
         }
 
         private CustomImageSpan(final Drawable d, final int verticalAlignment) {
             super(verticalAlignment);
             mDrawable = d;
-            mDrawable.setBounds(0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight());
+            mDrawable.setBounds(
+                    0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()
+            );
         }
 
         private CustomImageSpan(final Uri uri, final int verticalAlignment) {
@@ -1410,10 +1190,13 @@ public final class SpanUtils {
             } else if (mContentUri != null) {
                 Bitmap bitmap;
                 try {
-                    InputStream is = Utils.getApp().getContentResolver().openInputStream(mContentUri);
+                    InputStream is =
+                            Utils.getApp().getContentResolver().openInputStream(mContentUri);
                     bitmap = BitmapFactory.decodeStream(is);
                     drawable = new BitmapDrawable(Utils.getApp().getResources(), bitmap);
-                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    drawable.setBounds(
+                            0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()
+                    );
                     if (is != null) {
                         is.close();
                     }
@@ -1423,7 +1206,9 @@ public final class SpanUtils {
             } else {
                 try {
                     drawable = ContextCompat.getDrawable(Utils.getApp(), mResourceId);
-                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    drawable.setBounds(
+                            0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()
+                    );
                 } catch (Exception e) {
                     Log.e("sms", "Unable to find resource: " + mResourceId);
                 }
@@ -1455,42 +1240,60 @@ public final class SpanUtils {
         public abstract Drawable getDrawable();
 
         @Override
-        public int getSize(@NonNull final Paint paint, final CharSequence text, final int start, final int end, final Paint.FontMetricsInt fm) {
+        public int getSize(@NonNull final Paint paint, final CharSequence text,
+                           final int start, final int end, final Paint.FontMetricsInt fm) {
             Drawable d = getCachedDrawable();
             Rect rect = d.getBounds();
-            final int fontHeight = (int) (paint.getFontMetrics().descent - paint.getFontMetrics().ascent);
-            if (fm != null) { // this is the fucking code which I waste 3 days
-                if (rect.height() > fontHeight) {
+            if (fm != null) {
+//                LogUtils.d("fm.top: " + fm.top,
+//                        "fm.ascent: " + fm.ascent,
+//                        "fm.descent: " + fm.descent,
+//                        "fm.bottom: " + fm.bottom,
+//                        "lineHeight: " + (fm.bottom - fm.top));
+                int lineHeight = fm.bottom - fm.top;
+                if (lineHeight < rect.height()) {
                     if (mVerticalAlignment == ALIGN_TOP) {
-                        fm.descent += rect.height() - fontHeight;
+                        fm.top = fm.top;
+                        fm.bottom = rect.height() + fm.top;
                     } else if (mVerticalAlignment == ALIGN_CENTER) {
-                        fm.ascent -= (rect.height() - fontHeight) / 2;
-                        fm.descent += (rect.height() - fontHeight) / 2;
+                        fm.top = -rect.height() / 2 - lineHeight / 4;
+                        fm.bottom = rect.height() / 2 - lineHeight / 4;
                     } else {
-                        fm.ascent -= rect.height() - fontHeight;
+                        fm.top = -rect.height() + fm.bottom;
+                        fm.bottom = fm.bottom;
                     }
+                    fm.ascent = fm.top;
+                    fm.descent = fm.bottom;
                 }
             }
             return rect.right;
         }
 
         @Override
-        public void draw(@NonNull final Canvas canvas, final CharSequence text, final int start, final int end, final float x, final int top, final int y, final int bottom, @NonNull final Paint paint) {
+        public void draw(@NonNull final Canvas canvas, final CharSequence text,
+                         final int start, final int end, final float x,
+                         final int top, final int y, final int bottom, @NonNull final Paint paint) {
             Drawable d = getCachedDrawable();
             Rect rect = d.getBounds();
             canvas.save();
-            final float fontHeight = paint.getFontMetrics().descent - paint.getFontMetrics().ascent;
-            int transY = bottom - rect.bottom;
-            if (rect.height() < fontHeight) { // this is the fucking code which I waste 3 days
-                if (mVerticalAlignment == ALIGN_BASELINE) {
-                    transY -= paint.getFontMetricsInt().descent;
+            float transY;
+            int lineHeight = bottom - top;
+//            LogUtils.d("rectHeight: " + rect.height(),
+//                    "lineHeight: " + (bottom - top));
+            if (rect.height() < lineHeight) {
+                if (mVerticalAlignment == ALIGN_TOP) {
+                    transY = top;
                 } else if (mVerticalAlignment == ALIGN_CENTER) {
-                    transY -= (fontHeight - rect.height()) / 2;
-                } else if (mVerticalAlignment == ALIGN_TOP) {
-                    transY -= fontHeight - rect.height();
+                    transY = (bottom + top - rect.height()) / 2;
+                } else if (mVerticalAlignment == ALIGN_BASELINE) {
+                    transY = y - rect.height();
+                } else {
+                    transY = bottom - rect.height();
                 }
+                canvas.translate(x, transY);
+            } else {
+                canvas.translate(x, top);
             }
-            canvas.translate(x, transY);
             d.draw(canvas);
             canvas.restore();
         }
@@ -1498,12 +1301,13 @@ public final class SpanUtils {
         private Drawable getCachedDrawable() {
             WeakReference<Drawable> wr = mDrawableRef;
             Drawable d = null;
-            if (wr != null) d = wr.get();
+            if (wr != null)
+                d = wr.get();
             if (d == null) {
                 d = getDrawable();
                 mDrawableRef = new WeakReference<>(d);
             }
-            return getDrawable();
+            return d;
         }
 
         private WeakReference<Drawable> mDrawableRef;
@@ -1527,7 +1331,10 @@ public final class SpanUtils {
         private float dx, dy;
         private int shadowColor;
 
-        private ShadowSpan(final float radius, final float dx, final float dy, final int shadowColor) {
+        private ShadowSpan(final float radius,
+                           final float dx,
+                           final float dy,
+                           final int shadowColor) {
             this.radius = radius;
             this.dx = dx;
             this.dy = dy;
@@ -1541,7 +1348,7 @@ public final class SpanUtils {
     }
 
 
-    /*--------------------------------------------------------------------------------------------*/
+    /**--------------------------------------------新增------------------------------------------------*/
 
     /**
      * 设置时间戳时间部分变色
